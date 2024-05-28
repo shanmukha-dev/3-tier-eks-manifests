@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main  # Or your desired deployment branch
-    paths:
-      - 'k8s-manifests/**'  # Trigger only on changes to the manifest folder
-      - '.github/workflows/k8s_manifest_pipeline.yml'
+
 jobs:
   build-and-deploy:
     permissions:
@@ -24,8 +22,8 @@ jobs:
       - name: Deploy to AWS EKS
         run: |
           aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.CLUSTER_NAME }}
-          kubectl apply -f k8s-manifests/frontend_deployment.yaml
-          kubectl apply -f k8s-manifests/backend.yaml
-          kubectl apply -f k8s-manifests/database.yaml   
-          kubectl apply -f k8s-manifests/secret.yaml
-          kubectl apply -f k8s-manifests/service.yaml
+          kubectl apply -f frontend_deployment.yaml
+          kubectl apply -f backend.yaml
+          kubectl apply -f database.yaml   
+          kubectl apply -f secret.yaml
+          kubectl apply -f service.yaml
