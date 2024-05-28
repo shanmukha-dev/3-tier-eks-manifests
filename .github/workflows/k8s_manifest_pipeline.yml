@@ -1,0 +1,31 @@
+name: k8s Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Or your desired deployment branch
+    paths:
+      - 'k8s-manifests/**'  # Trigger only on changes to the manifest folder
+      - '.github/workflows/k8s_manifest_pipeline.yml'
+jobs:
+  build-and-deploy:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    runs-on: ubuntu-latest
+    env:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+    
+      - name: Deploy to AWS EKS
+        run: |
+          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.CLUSTER_NAME }}
+          kubectl apply -f k8s-manifests/frontend_deployment.yaml
+          kubectl apply -f k8s-manifests/backend.yaml
+          kubectl apply -f k8s-manifests/database.yaml   
+          kubectl apply -f k8s-manifests/secret.yaml
+          kubectl apply -f k8s-manifests/service.yaml
