@@ -40,3 +40,4 @@ spec:
           value: "mydatabase"
         - name: MYSQL_TABLE
           value: "users"
+---
