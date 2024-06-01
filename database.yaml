@@ -18,6 +18,15 @@ spec:
           operator: "Equal"
           value: "private"
           effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: scope
+                operator: In
+                values:
+                - private
       containers:
       - image: mysql:latest
         name: mysql

@@ -19,6 +19,15 @@ spec:
           operator: "Equal"
           value: "public"
           effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: scope
+                operator: In
+                values:
+                - public
       containers:
       - name: frontend
         imagePullPolicy: Always
