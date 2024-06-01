@@ -14,6 +14,11 @@ spec:
       labels:
         app: frontend
     spec:
+      tolerations:
+        - key: "subnet"
+          operator: "Equal"
+          value: "public"
+          effect: "NoSchedule"
       containers:
       - name: frontend
         imagePullPolicy: Always
