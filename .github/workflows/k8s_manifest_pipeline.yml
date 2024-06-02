@@ -24,6 +24,7 @@ jobs:
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.CLUSTER_NAME }}
 
       - name: Add Prometheus Helm Repository
         run: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -39,7 +40,6 @@ jobs:
     
       - name: Deploy to AWS EKS
         run: |
-          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.CLUSTER_NAME }}
           kubectl apply -f frontend_deployment.yaml
           kubectl apply -f backend.yaml
           kubectl apply -f database.yaml   
