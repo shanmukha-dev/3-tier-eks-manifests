@@ -18,7 +18,24 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3\
+
+        # Add Prometheus and Grafana Setup Steps
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - name: Add Prometheus Helm Repository
+        run: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+      - name: Update Helm Repositories
+        run: helm repo update
+
+      - name: Install Prometheus Operator
+        run: helm install prometheus prometheus-community/kube-prometheus-stack --create-namespace -n monitoring
+
+      - name: Install Grafana
+        run: helm install grafana grafana/grafana -n monitoring --set "service.type=LoadBalancer" --set persistence.enabled=false
     
       - name: Deploy to AWS EKS
         run: |
